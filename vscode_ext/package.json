@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tnramalho/vscode-ext-ai-code-review"
+    "url": "https://github.com/conceptadev/revu/tree/main/vscode_ext"
   },
   "engines": {
     "vscode": "^1.78.0"
@@ -21,7 +21,7 @@
     "commands": [
       {
         "command": "ai-revu-code.codeReviewProject",
-        "title": "AI RevU Code"
+        "title": "AI Revu Code"
       }
     ]
   },
