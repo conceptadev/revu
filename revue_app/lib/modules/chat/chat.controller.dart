@@ -35,10 +35,6 @@ class ChatController {
       return utf8.decode(decodedContent, allowMalformed: true);
     }
 
-    for (var file in repository.files) {
-      print(file.path);
-      print(decodeContent(file.content));
-    }
     // Get the code contents
     // Display the file path before the code content
     final codeContents = repository.files
@@ -55,8 +51,6 @@ class ChatController {
         CONTEXT:
         $codeContents
         ''';
-
-    print(prompt);
 
     _messageList.addAll([
       ChatMessage(
@@ -99,7 +93,7 @@ class ChatController {
   // Chat service
 
   // Get the last messages up to the token count of GPTModel.maxTokens
-  String get _previousMessageContext {
+  Future<String> _previousMessageContext() async {
     final lastMessages = <ChatMessage>[];
     // Buffer of the number of the total tokens to avoid issues with the estimator.
     const tokenBuffer = 500;
@@ -108,7 +102,7 @@ class ChatController {
 
     for (var i = _messageList.length - 1; i >= 0; i--) {
       final message = _messageList[i];
-      tokenCount += message.tokenCount;
+      tokenCount += await message.getTokenCount();
 
       if (tokenCount >= 100000 - tokenBuffer) {
         break;
@@ -116,6 +110,8 @@ class ChatController {
 
       lastMessages.add(message);
     }
+
+    print('token count: $tokenCount');
 
     MessageDto messageMapper(ChatMessage message) {
       if (message.role == MessageRole.assistant) {
@@ -149,9 +145,11 @@ class ChatController {
 
     _waitingResponse.value = true;
 
+    final previousContext = await _previousMessageContext();
+
     try {
       final response = await ClaudeService.sendCodeReviewRequest(
-        _previousMessageContext,
+        previousContext,
       );
 
       _messageList.add(ChatMessage(

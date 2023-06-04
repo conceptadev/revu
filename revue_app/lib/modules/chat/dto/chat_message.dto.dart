@@ -1,24 +1,33 @@
-import 'package:equatable/equatable.dart';
 import 'package:revue_app/modules/chat/enum/chat_roles.enum.dart';
+import 'package:sp_ai_simple_bpe_tokenizer/utilities/sp_ai_simple_bpe_tokenizer.dart';
 
-class ChatMessage extends Equatable {
+class ChatMessage {
   final MessageRole role;
 
   /// Hide the message from the UI
   final bool hidden;
   final String content;
   final DateTime createdAt;
+  int? _tokenCountCache;
 
-  const ChatMessage({
+  ChatMessage({
     required this.role,
     required this.content,
     required this.createdAt,
     this.hidden = false,
   });
 
-  int get tokenCount {
-    // return _tokenCountCache ??= TokenEstimator.estimateAverageTokens(content);
-    return 0;
+  Future<int> getTokenCount() async {
+    if (_tokenCountCache != null) {
+      return _tokenCountCache!;
+    }
+    final container = await SPAiSimpleBpeTokenizer().encodeString(content);
+    if (container.tokenCount == null) {
+      return 0;
+    } else {
+      _tokenCountCache = container.tokenCount!;
+      return _tokenCountCache!;
+    }
   }
 
   // Returns a new instance of ChatMessage that
@@ -33,12 +42,4 @@ class ChatMessage extends Equatable {
       hidden: hidden,
     );
   }
-
-  @override
-  List<Object?> get props => [
-        role,
-        content,
-        createdAt,
-        hidden,
-      ];
 }

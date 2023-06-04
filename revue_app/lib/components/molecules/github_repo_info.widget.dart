@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:github/github.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../helpers/date_utils.dart';
 
@@ -77,7 +76,7 @@ class GitHubRepoInfo extends ConsumerWidget {
                       ),
                       const SizedBox(width: 16),
                       const Icon(
-                        MdiIcons.callSplit,
+                        Icons.abc_rounded,
                         size: 16,
                       ),
                       const SizedBox(width: 4),

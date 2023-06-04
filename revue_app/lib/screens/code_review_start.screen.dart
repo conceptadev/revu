@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:github/github.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:revue_app/helpers/input_decoration.dart';
 import 'package:revue_app/modules/github/github_providers.dart';
 
@@ -84,7 +83,7 @@ class CodeReviewStartScreen extends HookConsumerWidget {
             children: [
               const SizedBox(height: 50),
               const Icon(
-                MdiIcons.github,
+                Icons.abc,
                 size: 80,
               ),
               const SizedBox(height: 30),

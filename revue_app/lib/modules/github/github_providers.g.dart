@@ -21,7 +21,7 @@ final githubServiceProvider = AutoDisposeProvider<GithubService>.internal(
 );
 
 typedef GithubServiceRef = AutoDisposeProviderRef<GithubService>;
-String _$githubRepositoryHash() => r'a21eee185645f4822c8ce5364444be29c2bf1c41';
+String _$githubRepositoryHash() => r'ee70ff0847d5f6ecd8bb4658a46028649e8d3ee2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -59,9 +59,9 @@ class GithubRepositoryFamily extends Family<AsyncValue<GithubRepositoryDto?>> {
   /// See also [githubRepository].
   GithubRepositoryProvider call(
     RepositorySlug slug, {
-    String path = 'src',
+    String path = '',
     String? branch,
-    List<String> extensions = const ['ts', 'tsx'],
+    List<String> extensions = const ['ts', 'tsx', 'dart'],
   }) {
     return GithubRepositoryProvider(
       slug,
@@ -104,9 +104,9 @@ class GithubRepositoryProvider
   /// See also [githubRepository].
   GithubRepositoryProvider(
     this.slug, {
-    this.path = 'src',
+    this.path = '',
     this.branch,
-    this.extensions = const ['ts', 'tsx'],
+    this.extensions = const ['ts', 'tsx', 'dart'],
   }) : super.internal(
           (ref) => githubRepository(
             ref,
