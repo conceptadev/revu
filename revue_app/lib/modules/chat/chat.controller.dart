@@ -13,16 +13,17 @@ import 'package:revue_app/modules/github/dto/github_repository.dto.dart';
 
 class ChatController {
   ChatController({
-    required this.repository,
+    this.repository,
+    this.codeContext,
   }) {
     _buildContext();
   }
 
-  final GithubRepositoryDto repository;
+  final GithubRepositoryDto? repository;
+  final String? codeContext;
 
   void _buildContext() {
     // Create a prompt for an expert React code reviewer
-    final candidateName = repository.repository.owner?.login ?? 'Candidate';
 
     String decodeContent(String? content) {
       if (content == null) {
@@ -35,21 +36,33 @@ class ChatController {
       return utf8.decode(decodedContent, allowMalformed: true);
     }
 
-    // Get the code contents
-    // Display the file path before the code content
-    final codeContents = repository.files
-        .map((file) => '# file: ${file.path} \n ${decodeContent(file.content)}')
-        .join('\n\n');
+    String getCodeContents() {
+      if (codeContext != null) {
+        return codeContext!;
+      } else {
+        if (repository != null) {
+          return repository!.files
+              .map((file) =>
+                  '# file: ${file.path} \n ${decodeContent(file.content)}')
+              .join('\n\n');
+        }
+      }
+
+      return '';
+    }
+
+    final contents = getCodeContents();
 
     final prompt =
-        '''Act as a helpful  code reviewer. You were provided the task to do a code review for Candidate that is applying for a senior developer position.
-        You will be provided a CONTEXT that will have each file path and its content.
-        I want you to provide detailed insights in order to properly run technical qualifications on a candidate.
-
-        You can call this candidate: $candidateName.
+        '''Act as a proficient software engineer and code reviewer with expertise
+         in software development best practices. A codebase will be provided as 
+         CONTEXT for your review. Thoroughly analyze the codebase to offer 
+         knowledgeable insights, recommendations, and improvements based on our discussion.
+         If necessary, seek additional information about the code's intended use cases or
+         any specific aspects that need clarification.
 
         CONTEXT:
-        $codeContents
+        $contents
         ''';
 
     _messageList.addAll([
@@ -111,8 +124,6 @@ class ChatController {
       lastMessages.add(message);
     }
 
-    print('token count: $tokenCount');
-
     MessageDto messageMapper(ChatMessage message) {
       if (message.role == MessageRole.assistant) {
         return AssistantMessageDto(
@@ -140,7 +151,7 @@ class ChatController {
   }
 
   // Add message
-  Future<void> sendMessage(ChatMessage message) async {
+  Future<void> sendMessage(ChatMessage message, [instant = false]) async {
     _messageList.add(message);
 
     _waitingResponse.value = true;
@@ -150,6 +161,7 @@ class ChatController {
     try {
       final response = await ClaudeService.sendCodeReviewRequest(
         previousContext,
+        instant,
       );
 
       _messageList.add(ChatMessage(

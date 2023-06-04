@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:revue_app/modules/github/github_providers.dart';
 import 'package:revue_app/screens/code_review.dart';
@@ -17,7 +16,15 @@ class AppShell extends HookConsumerWidget {
     final repositorySlug = ref.watch(githubRepositorySlugProvider);
 
     final hasRepositoryOptions = repositorySlug != null;
-    final selectedTab = useState(0);
+
+    // if (kIsWeb) {
+    //   return ScaffoldMessenger(
+    //     key: scaffoldMessengerKey,
+    //     child: const Scaffold(
+    //       body: CodeReviewWebScreen(),
+    //     ),
+    //   );
+    // }
 
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,

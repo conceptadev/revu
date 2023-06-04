@@ -1,0 +1,22 @@
+# Directories
+node_modules/
+out/
+dist/
+
+# Files
+.vscode/
+.vscode-test/
+*.log
+*.vsix
+yarn.lock
+package-lock.json
+
+# IDE/Editor specific files
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.idea/
+*.iml
+*.ipr
+*.iws
+*.swp

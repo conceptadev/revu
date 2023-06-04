@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="A new Flutter project." />
+
+    <title>revue_app</title>
+
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      iframe {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <iframe
+      id="flutter-iframe"
+      src="https://anthropic-api.herokuapp.com/public/web"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+    <script src="${paths.interopJs}" defer></script>
+  </body>
+</html>

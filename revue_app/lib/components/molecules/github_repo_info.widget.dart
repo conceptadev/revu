@@ -76,7 +76,7 @@ class GitHubRepoInfo extends ConsumerWidget {
                       ),
                       const SizedBox(width: 16),
                       const Icon(
-                        Icons.abc_rounded,
+                        Icons.call_split,
                         size: 16,
                       ),
                       const SizedBox(width: 4),

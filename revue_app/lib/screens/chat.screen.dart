@@ -13,11 +13,16 @@ GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
 
 class ChatScreen extends HookWidget {
   ChatScreen({
-    required this.repository,
+    this.repository,
+    this.codeContext,
     super.key,
-  }) : _chatController = ChatController(repository: repository);
+  }) : _chatController = ChatController(
+          repository: repository,
+          codeContext: codeContext,
+        );
 
-  final GithubRepositoryDto repository;
+  final GithubRepositoryDto? repository;
+  final String? codeContext;
 
   late final ChatController _chatController;
 
@@ -25,6 +30,7 @@ class ChatScreen extends HookWidget {
   Widget build(BuildContext context) {
     final TextEditingController textController = useTextEditingController();
     final ScrollController scrollController = useScrollController();
+    final isInstant = useState(false);
 
     final waitingResponse = useListenable(_chatController.waitingResponse);
     final messages = useListenable(_chatController.displayMessages);
@@ -41,7 +47,7 @@ class ChatScreen extends HookWidget {
         createdAt: DateTime.now(),
       );
 
-      _chatController.sendMessage(userMessage);
+      _chatController.sendMessage(userMessage, isInstant.value);
 
       textController.clear();
     }
@@ -61,15 +67,14 @@ class ChatScreen extends HookWidget {
         );
       }
       return Padding(
-        padding: const EdgeInsets.only(right: 4.0),
-        child: IconButton(
-          icon: const Icon(Icons.send),
-          iconSize: 18,
-          onPressed: () {
-            handleSubmit();
-          },
-        ),
-      );
+          padding: const EdgeInsets.only(right: 4.0),
+          child: IconButton(
+            icon: const Icon(Icons.send),
+            iconSize: 18,
+            onPressed: () {
+              handleSubmit();
+            },
+          ));
     }
 
     final focusNode = FocusNode(
@@ -153,6 +158,23 @@ class ChatScreen extends HookWidget {
                 ),
                 suffixIcon: buildSendButton(
                   isTyping: waitingResponse.value,
+                ),
+                prefixIcon: Tooltip(
+                  message: isInstant.value
+                      ? 'Instant mode (claude-instant-v1.1-100k)'
+                      : 'Enhanced mode (claude-v1.3-100k)',
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: IconButton(
+                      icon: Icon(
+                        isInstant.value ? Icons.bolt : Icons.settings_suggest,
+                      ),
+                      iconSize: 18,
+                      onPressed: () {
+                        isInstant.value = !isInstant.value;
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),

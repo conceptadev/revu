@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:github/github.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:revue_app/helpers/input_decoration.dart';
 import 'package:revue_app/modules/github/github_providers.dart';
 
@@ -15,7 +16,7 @@ class CodeReviewStartScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final slugController = useTextEditingController(
-      text: 'ChristopherMarques/concepta-challenge',
+      text: '',
     );
     final branchController = useTextEditingController(text: 'main');
     final extensionsController = useTextEditingController(text: 'ts, tsx');
@@ -32,8 +33,8 @@ class CodeReviewStartScreen extends HookConsumerWidget {
         if (repo != null) {
           ref.read(githubRepositorySlugProvider.notifier).state = slug;
         }
-      } catch (e) {
-        errorMessage.value = 'Repository does not exist';
+      } on GitHubError catch (e) {
+        errorMessage.value = e.message;
       }
     }
 
@@ -83,7 +84,7 @@ class CodeReviewStartScreen extends HookConsumerWidget {
             children: [
               const SizedBox(height: 50),
               const Icon(
-                Icons.abc,
+                MdiIcons.github,
                 size: 80,
               ),
               const SizedBox(height: 30),
@@ -102,7 +103,7 @@ class CodeReviewStartScreen extends HookConsumerWidget {
                   labelText: "Github Repository",
                 ),
               ),
-              // const SizedBox(height: 10),
+              const SizedBox(height: 10),
               // TextFormField(
               //   controller: branchController,
               //   decoration: customInputDecoration(
