@@ -1,21 +1,24 @@
+import 'dart:async';
 import 'dart:io';
 
-/// Scans [rootDir] for a certain condition
-Future<List<FileSystemEntity>> scanDirectoryForCondition({
+/// Scans [rootDir] for entities that meet a certain condition
+Stream<FileSystemEntity> scanDirectoryForCondition({
   required bool Function(FileSystemEntity) condition,
   required Directory rootDir,
-}) async {
-  final entities = <FileSystemEntity>[];
-
-  // Find directories recursively
-  await for (FileSystemEntity entity in rootDir.list(
-    recursive: true,
-    followLinks: false,
-  )) {
-    // Check if entity is directory
-    if (condition(entity)) {
-      entities.add(entity);
+}) async* {
+  try {
+    // Find entities recursively
+    await for (FileSystemEntity entity in rootDir.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      // Check if entity meets condition
+      if (condition(entity)) {
+        yield entity;
+      }
     }
+  } catch (e) {
+    // Handle any errors that occur
+    print('Error scanning directory: $e');
   }
-  return entities;
 }

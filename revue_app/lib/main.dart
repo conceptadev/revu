@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:revue_app/screens/chat.screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:revue_app/app_shell.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,8 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      // darkTheme: ThemeData.dark(useMaterial3: true),
-      home: const ChatScreen(),
+      home: const AppShell(),
     );
   }
 }
