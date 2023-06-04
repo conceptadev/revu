@@ -15,7 +15,7 @@ interface ResourcePaths {
 
 export function activate(context: vscode.ExtensionContext) {
   let submitProjectDisposable = vscode.commands.registerCommand(
-    "claude-ai-code-review.codeReviewProject",
+    "ai-revu-code.codeReviewProject",
     () => {
       const workspaceFolders = vscode.workspace.workspaceFolders;
       if (workspaceFolders) {
