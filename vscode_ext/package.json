@@ -2,7 +2,7 @@
   "name": "ai-revu-code",
   "displayName": "ai-revu-code",
   "description": "A AI that let you talk to your project using Claude API from Anthropic AI",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "publisher": "ConceptaTech",
   "license": "MIT",
   "repository": {
@@ -25,6 +25,10 @@
       }
     ]
   },
+  "files": [
+    "out",
+    "src/*.html" 
+  ],
   "scripts": {
     "vscode:prepublish": "yarn run package",
     "compile": "webpack",

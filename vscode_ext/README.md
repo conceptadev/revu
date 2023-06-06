@@ -34,6 +34,10 @@ There are no known issues at the moment. If you encounter any problems, please r
 
 Initial release of the Claude AI Code Review Extension.
 
+### 0.0.3
+
+Bug fixes
+
 ## Contributing
 
 Contributions are welcome! If you find any bugs, have feature requests, or want to contribute to the project, please follow the guidelines in the [CONTRIBUTING.md](./CONTRIBUTING.md) file.
@@ -43,8 +47,4 @@ Contributions are welcome! If you find any bugs, have feature requests, or want 
 This extension is released under the [MIT License](./LICENSE.md).
 
 ## To test
- npm run compile
- open src/extension.ts then press f5 to open a new vscode with extension loaded.
-
- AI Code Review : to run code review for selected text
- AI Code Review: Current Document : to run code review for current document
+For know it will only works for small project using js,ts,jsx, tsx files.
