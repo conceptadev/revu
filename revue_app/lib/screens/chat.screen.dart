@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:revue_app/components/atoms/typing_indicator.dart';
 import 'package:revue_app/components/molecules/bubble/bubble.widget.dart';
+import 'package:revue_app/helpers/listenable_builder.dart';
 import 'package:revue_app/modules/chat/chat.controller.dart';
 import 'package:revue_app/modules/chat/dto/chat_message.dto.dart';
 import 'package:revue_app/modules/chat/enum/chat_roles.enum.dart';
@@ -30,10 +31,9 @@ class ChatScreen extends HookWidget {
   Widget build(BuildContext context) {
     final TextEditingController textController = useTextEditingController();
     final ScrollController scrollController = useScrollController();
-    final isInstant = useState(false);
+    final isInstant = useState(true);
 
     final waitingResponse = useListenable(_chatController.waitingResponse);
-    final messages = useListenable(_chatController.displayMessages);
 
     void handleSubmit() async {
       final message = textController.text;
@@ -47,7 +47,10 @@ class ChatScreen extends HookWidget {
         createdAt: DateTime.now(),
       );
 
-      _chatController.sendMessage(userMessage, isInstant.value);
+      _chatController.sendMessageStream(
+        userMessage,
+        instant: isInstant.value,
+      );
 
       textController.clear();
     }
@@ -118,16 +121,29 @@ class ChatScreen extends HookWidget {
         // mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              reverse: true,
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[index];
-                return MessageBubble(
-                  message.content,
-                  isMe: message.role == MessageRole.user,
-                  isTyping: _chatController.waitingResponse.value && index == 0,
+            child: MultiListenableBuilder(
+              listenables: [
+                _chatController.waitingResponse,
+                _chatController.messages,
+              ],
+              builder: (context, child) {
+                final filteredMessages = _chatController.messages.reverse
+                    .where((element) => element.hidden == false)
+                    .toList();
+                final messageReverse = filteredMessages;
+                return ListView.builder(
+                  controller: scrollController,
+                  reverse: true,
+                  itemCount: messageReverse.length,
+                  itemBuilder: (context, index) {
+                    final message = messageReverse[index];
+                    return MessageBubble(
+                      message.content,
+                      isMe: message.role == MessageRole.user,
+                      isTyping:
+                          _chatController.waitingResponse.value && index == 0,
+                    );
+                  },
                 );
               },
             ),

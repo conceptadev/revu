@@ -39,6 +39,9 @@ dependencies:
   json_annotation: ^4.8.1
   intl: ^0.18.1
   sp_ai_simple_bpe_tokenizer: ^0.0.1+4
+  eventsource: ^0.4.0
+  async: ^2.11.0
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:

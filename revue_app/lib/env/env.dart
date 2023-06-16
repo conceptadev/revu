@@ -7,4 +7,7 @@ part 'env.g.dart';
 abstract class Env {
   @EnviedField(varName: 'GITHUB_TOKEN')
   static const githubToken = _Env.githubToken;
+
+  @EnviedField(varName: 'ANTHROPIC_API_KEY')
+  static const anthropicApiKey = _Env.anthropicApiKey;
 }

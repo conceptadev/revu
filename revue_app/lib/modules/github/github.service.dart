@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:github/github.dart';
+import 'package:revue_app/env/env.dart';
 
 class RepositoryOptions extends Equatable {
   final String owner;
@@ -20,7 +21,7 @@ class RepositoryOptions extends Equatable {
 }
 
 // auth: Authentication.withToken(Env.githubToken)
-final _github = GitHub();
+final _github = GitHub(auth: Authentication.withToken(Env.githubToken));
 
 class GithubService {
   GithubService();
@@ -29,6 +30,8 @@ class GithubService {
   Future<Repository?> getRepository(RepositorySlug slug) async {
     return await _github.repositories.getRepository(slug);
   }
+
+  // https://raw.githubusercontent.com/conceptadev/rockets
 
   Future<List<GitHubFile>> getRepositoryContents({
     required RepositorySlug slug,

@@ -41,60 +41,63 @@ class GitHubRepoInfo extends ConsumerWidget {
                 ),
               ],
             ),
-            Visibility(
-              visible: repository.description.isNotEmpty,
-              child: Text(
-                repository.description,
-                softWrap: true,
-                style: textTheme.bodySmall,
+            // Visibility(
+            //   visible: repository.description.isNotEmpty,
+            //   child: Text(
+            //     repository.description,
+            //     softWrap: true,
+            //     style: textTheme.bodySmall,
+            //   ),
+            // ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Chip(
+                    label: Row(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${repository.stargazersCount}',
+                          style: textTheme.labelSmall,
+                        ),
+                        const SizedBox(width: 16),
+                        const Icon(
+                          Icons.remove_red_eye,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${repository.watchersCount}',
+                          style: textTheme.labelSmall,
+                        ),
+                        const SizedBox(width: 16),
+                        const Icon(
+                          Icons.call_split,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${repository.forksCount}',
+                          style: textTheme.labelSmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Chip(
+                    label: Text(
+                      repository.language,
+                      style: textTheme.labelSmall,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Chip(
-                  label: Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${repository.stargazersCount}',
-                        style: textTheme.labelSmall,
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(
-                        Icons.remove_red_eye,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${repository.watchersCount}',
-                        style: textTheme.labelSmall,
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(
-                        Icons.call_split,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${repository.forksCount}',
-                        style: textTheme.labelSmall,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Chip(
-                  label: Text(
-                    repository.language,
-                    style: textTheme.labelSmall,
-                  ),
-                ),
-              ],
             )
           ]),
           Column(

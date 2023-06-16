@@ -16,9 +16,9 @@ final githubRepositorySlugProvider =
 Future<GithubRepositoryDto?> githubRepository(
   GithubRepositoryRef ref,
   RepositorySlug slug, {
-  String path = '',
+  String path = 'src',
   String? branch,
-  List<String> extensions = const ['ts', 'tsx', 'dart'],
+  List<String> extensions = const ['ts', 'md', 'json' 'tsx', 'dart'],
 }) async {
   final service = ref.watch(githubServiceProvider);
 

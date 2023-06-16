@@ -16,7 +16,7 @@ class CodeReviewStartScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final slugController = useTextEditingController(
-      text: '',
+      text: 'leoafarias/concepta-challenge',
     );
     final branchController = useTextEditingController(text: 'main');
     final extensionsController = useTextEditingController(text: 'ts, tsx');
