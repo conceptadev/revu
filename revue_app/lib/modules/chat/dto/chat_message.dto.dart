@@ -6,6 +6,7 @@ class ChatMessage {
 
   /// Hide the message from the UI
   final bool hidden;
+  final bool showCreateFileButton;
   final String content;
   final DateTime createdAt;
   int? _tokenCountCache;
@@ -15,6 +16,7 @@ class ChatMessage {
     required this.content,
     required this.createdAt,
     this.hidden = false,
+    this.showCreateFileButton = false,
   });
 
   Future<int> getTokenCount() async {
@@ -40,6 +42,7 @@ class ChatMessage {
       content: content + (deltaContent ?? ''),
       createdAt: createdAt ?? this.createdAt,
       hidden: hidden,
+      showCreateFileButton: showCreateFileButton, 
     );
   }
 }

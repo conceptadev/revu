@@ -124,10 +124,12 @@ class ChatScreen extends HookWidget {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
+
                 return MessageBubble(
                   message.content,
                   isMe: message.role == MessageRole.user,
                   isTyping: _chatController.waitingResponse.value && index == 0,
+                  showButton: message.showCreateFileButton,
                 );
               },
             ),

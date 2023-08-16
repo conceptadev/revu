@@ -36,10 +36,13 @@ class ChatController {
       return utf8.decode(decodedContent, allowMalformed: true);
     }
 
+    // STEP Get the context to work with
     String getCodeContents() {
       if (codeContext != null) {
+        // here it will get code context
         return codeContext!;
       } else {
+        // STEP this is to get from github repository files
         if (repository != null) {
           return repository!.files
               .map((file) =>
@@ -51,20 +54,28 @@ class ChatController {
       return '';
     }
 
+    // STEP first thing is to get the context to be used
     final contents = getCodeContents();
 
+    // TODO: Change promp based on profile selected
+    // need to create selection of profile
     final prompt =
         '''Act as a proficient software engineer and code reviewer with expertise
          in software development best practices. A codebase will be provided as 
          CONTEXT for your review. Thoroughly analyze the codebase to offer 
          knowledgeable insights, recommendations, and improvements based on our discussion.
          If necessary, seek additional information about the code's intended use cases or
-         any specific aspects that need clarification.
+         any specific aspects that need clarification. 
+
+         Let's define a key work that only user can use, this will be sent in the future prompts, where it will change how your response only for the next result, please to not take assumptions, and consider this key word has it should be
+            if no keyword was found, continue to reply normally:
+              - for '[WRITE_FILE]' the response should be only Code (This is important so i will write a file with this response).
 
         CONTEXT:
         $contents
         ''';
 
+    // STEP add both to initial message to be used has initial context
     _messageList.addAll([
       ChatMessage(
         role: MessageRole.user,
@@ -76,11 +87,16 @@ class ChatController {
         role: MessageRole.assistant,
         hidden: true,
         content:
-            'Understood. I will use the context as the whole code base. I will critique but be insightful and helpful. What would like to know first?',
+            '''Understood. I will use the context as the whole code base. I will critique but be insightful and helpful. 
+            Understood. And if the user send the key word [WRITE_FILE] in the prompt, i will make sure the response is code only.
+
+            What would like to know first?''',
         createdAt: DateTime.now(),
       ),
     ]);
 
+    // After initial context has been set to the list, send a msg to api
+    // to get some result and display
     sendMessage(ChatMessage(
       role: MessageRole.user,
       content:
@@ -113,6 +129,7 @@ class ChatController {
 
     var tokenCount = 0;
 
+    // Gett all messages before the latest one, make sure does not get more than 100k
     for (var i = _messageList.length - 1; i >= 0; i--) {
       final message = _messageList[i];
       tokenCount += await message.getTokenCount();
@@ -152,22 +169,34 @@ class ChatController {
 
   // Add message
   Future<void> sendMessage(ChatMessage message, [instant = false]) async {
+    // STEP Add msg to ths list in the chat
     _messageList.add(message);
 
     _waitingResponse.value = true;
 
+    // STEP make sure to get previous context to send to claud api
     final previousContext = await _previousMessageContext();
 
     try {
+      // send TO API
       final response = await ClaudeService.sendCodeReviewRequest(
         previousContext,
         instant,
       );
-
+      
+      var showButton = false;
+      if (_messageList.isNotEmpty) {
+        var lastMessage = _messageList.last;
+        if (lastMessage.content.contains('[WRITE_FILE]')) {
+          showButton = true;
+        }
+      }
+    
       _messageList.add(ChatMessage(
         content: response,
         role: MessageRole.assistant,
         createdAt: DateTime.now(),
+        showCreateFileButton: showButton,
       ));
     } catch (e) {
       rethrow;

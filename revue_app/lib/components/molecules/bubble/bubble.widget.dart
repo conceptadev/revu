@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:revue_app/components/atoms/copy_clipboard_button.widget.dart';
 import 'package:revue_app/components/atoms/markdown_viewer.dart';
+import 'package:revue_app/components/molecules/dialog/dialog.widget.dart';
 
 // bool isMarkdown(String content) {
 //   const String markdownPattern =
@@ -15,11 +16,13 @@ class MessageBubble extends StatefulWidget {
   final String message;
   final bool isMe;
   final bool isTyping;
+  final bool showButton;
 
   const MessageBubble(
     this.message, {
     required this.isMe,
     this.isTyping = false,
+    this.showButton = false,
     super.key,
   });
 
@@ -41,6 +44,17 @@ class _MessageBubbleState extends State<MessageBubble> {
         ),
       ),
     );
+  }
+
+  void _handleInputSubmitted(String inputText) {
+    // TODO: send back to extension
+    print(inputText);
+    // Add the inputText to your object or perform any desired action
+    // For example, you could add the input to a list of messages
+    // setState(() {
+    //   // Assuming you have a list of messages, you can add the inputText to it
+    //   myMessages.add(inputText);
+    // });
   }
 
   @override
@@ -101,6 +115,21 @@ class _MessageBubbleState extends State<MessageBubble> {
                           ),
                         ),
                       ),
+                      if (widget.showButton)
+                        ElevatedButton(
+                          onPressed: () {
+                            //TODO: Send Last Message to VSCode;
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return InputDialog(
+                                  onInputSubmitted: _handleInputSubmitted,
+                                );
+                              },
+                            );
+                          },
+                          child: Text("Create File"),
+                        ),
                     ],
                   ),
                 ),

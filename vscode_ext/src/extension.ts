@@ -60,6 +60,8 @@ function getCodeFromProject(projectPath: string): string {
     }
   };
 
+  // Get only files inside src folder
+  // TODO: change to get fron root
   processFolder(path.join(projectPath, "src"));
 
   return code;
