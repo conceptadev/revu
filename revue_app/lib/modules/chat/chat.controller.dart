@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:js_interop';
 
 import 'package:flutter/foundation.dart';
 import 'package:revue_app/helpers/list.notifier.dart';
@@ -22,7 +23,7 @@ class ChatController {
   final GithubRepositoryDto? repository;
   final String? codeContext;
 
-  void _buildContext() {
+  void _buildContext([String? preDefinedPrompt]) {
     // Create a prompt for an expert React code reviewer
 
     String decodeContent(String? content) {
@@ -88,19 +89,19 @@ class ChatController {
         hidden: true,
         content:
             '''Understood. I will use the context as the whole code base. I will critique but be insightful and helpful. 
-            Understood. And if the user send the key word [WRITE_FILE] in the prompt, i will make sure the response is code only.
-
             What would like to know first?''',
         createdAt: DateTime.now(),
       ),
     ]);
 
+    String lastPrompt = preDefinedPrompt.isNull
+        ? 'Give a full overview of the code base. Including the stack being used.'
+        : preDefinedPrompt.toString();
     // After initial context has been set to the list, send a msg to api
     // to get some result and display
     sendMessage(ChatMessage(
       role: MessageRole.user,
-      content:
-          'Give a full overview of the code base. Including the stack being used.',
+      content: lastPrompt,
       hidden: true,
       createdAt: DateTime.now(),
     ));
@@ -183,15 +184,15 @@ class ChatController {
         previousContext,
         instant,
       );
-      
+
       var showButton = false;
-      if (_messageList.isNotEmpty) {
-        var lastMessage = _messageList.last;
-        if (lastMessage.content.contains('[WRITE_FILE]')) {
-          showButton = true;
-        }
-      }
-    
+      // if (_messageList.isNotEmpty) {
+      //   var lastMessage = _messageList.last;
+      //   if (lastMessage.content.contains('[WRITE_FILE]')) {
+      //     showButton = true;
+      //   }
+      // }
+
       _messageList.add(ChatMessage(
         content: response,
         role: MessageRole.assistant,
@@ -208,6 +209,11 @@ class ChatController {
   // Clear messages
   void clearMessages() {
     _messageList.clear();
+  }
+
+  void refreshContext(String content) {
+    clearMessages();
+    _buildContext(content);
   }
 }
 
