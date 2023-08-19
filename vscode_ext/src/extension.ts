@@ -37,6 +37,7 @@ function getCodeFromProject(projectPath: string): string {
       fileExtension === ".tsx" ||
       fileExtension === ".js" ||
       fileExtension === ".jsx" ||
+      fileExtension === ".dart" ||
       fileExtension === ".ts"
     ) {
       const fileContent = fs.readFileSync(filePath, "utf8");
@@ -60,10 +61,23 @@ function getCodeFromProject(projectPath: string): string {
     }
   };
 
-  // Get only files inside src folder
-  // TODO: change to get fron root
-  processFolder(path.join(projectPath, "src"));
+  // get it from src o
+  const srcFolder = path.join(projectPath, "src");
+  if (fs.existsSync(srcFolder)) {
+    // Get only files inside src folder
+    // TODO: change to get fron root
+    processFolder(srcFolder);
 
+  } else {
+    const libFolder = path.join(projectPath, "lib");
+    if (fs.existsSync(libFolder)) {
+      processFolder(libFolder);
+    } else {
+      //throw new Error(`Not Folder found to be used as context, you should have either  'src' or 'lib' folder`);
+      code = `Not Folder found to be used as context, you should have either  'src' or 'lib' folder`;
+    }
+  } 
+  
   return code;
 }
 
