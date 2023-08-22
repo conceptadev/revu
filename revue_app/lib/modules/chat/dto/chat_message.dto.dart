@@ -32,6 +32,18 @@ class ChatMessage {
     }
   }
 
+  ChatMessage copyWith({
+    String? content,
+    DateTime? createdAt,
+  }) {
+    return ChatMessage(
+      role: role,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+      hidden: hidden,
+    );
+  }
+
   // Returns a new instance of ChatMessage that
   ChatMessage copyWithDelta({
     String? deltaContent,

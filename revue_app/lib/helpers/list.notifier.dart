@@ -36,6 +36,12 @@ class ListNotifier<T> with ChangeNotifier {
     notifyListeners();
   }
 
+  void update(int index, T element) {
+    removeAt(index);
+    insert(index, element);
+    notifyListeners();
+  }
+
   T removeAt(int index) {
     final element = _list.removeAt(index);
     notifyListeners();

@@ -4,7 +4,9 @@ import 'dart:js_interop';
 
 import 'package:flutter/foundation.dart';
 import 'package:revue_app/helpers/list.notifier.dart';
-import 'package:revue_app/modules/anthropic/claude.service.dart';
+import 'package:revue_app/modules/anthropic/anthropic.service.dart';
+import 'package:revue_app/modules/anthropic/dto/completion_response.dto.dart';
+import 'package:revue_app/modules/anthropic/dto/sampling_params.dto.dart';
 import 'package:revue_app/modules/chat/dto/assistant_message.dto.dart';
 import 'package:revue_app/modules/chat/dto/chat_message.dto.dart';
 import 'package:revue_app/modules/chat/dto/message.dto.dart';
@@ -13,6 +15,7 @@ import 'package:revue_app/modules/chat/enum/chat_roles.enum.dart';
 import 'package:revue_app/modules/github/dto/github_repository.dto.dart';
 
 class ChatController {
+  final _client = AnthropicClient();
   ChatController({
     this.repository,
     this.codeContext,
@@ -61,7 +64,7 @@ class ChatController {
     // TODO: Change promp based on profile selected
     // need to create selection of profile
     final prompt =
-        '''Act as a proficient software engineer and code reviewer with expertise
+        '''Act as a React Native, and typescript expert software engineer and code reviewer with expertise
          in software development best practices. A codebase will be provided as 
          CONTEXT for your review. Thoroughly analyze the codebase to offer 
          knowledgeable insights, recommendations, and improvements based on our discussion.
@@ -94,12 +97,14 @@ class ChatController {
       ),
     ]);
 
+
     String lastPrompt = preDefinedPrompt.isNull
         ? 'Give a full overview of the code base. Including the stack being used.'
         : preDefinedPrompt.toString();
     // After initial context has been set to the list, send a msg to api
     // to get some result and display
-    sendMessage(ChatMessage(
+
+    sendMessageStream(ChatMessage(
       role: MessageRole.user,
       content: lastPrompt,
       hidden: true,
@@ -113,10 +118,6 @@ class ChatController {
   final ValueNotifier<bool> _waitingResponse = ValueNotifier<bool>(false);
 
   ListNotifier<ChatMessage> get messages => _messageList;
-
-  ListNotifier<ChatMessage> get displayMessages => ListNotifier(
-        messages.reverse.where((element) => element.hidden == false).toList(),
-      );
 
   ValueNotifier<bool> get waitingResponse => _waitingResponse;
 
@@ -169,8 +170,11 @@ class ChatController {
   }
 
   // Add message
-  Future<void> sendMessage(ChatMessage message, [instant = false]) async {
-    // STEP Add msg to ths list in the chat
+  Future<void> sendMessage(
+    ChatMessage message, {
+    instant = false,
+    CancellationToken? cancellationToken,
+  }) async {
     _messageList.add(message);
 
     _waitingResponse.value = true;
@@ -179,10 +183,13 @@ class ChatController {
     final previousContext = await _previousMessageContext();
 
     try {
-      // send TO API
-      final response = await ClaudeService.sendCodeReviewRequest(
-        previousContext,
-        instant,
+      final response = await _client.complete(
+        SamplingParametersDto(
+          prompt: previousContext,
+          model: instant
+              ? AnthropicModel.claudeInstantV1_1_100k
+              : AnthropicModel.claudeV1_3_100k,
+        ),
       );
 
       var showButton = false;
@@ -194,13 +201,59 @@ class ChatController {
       // }
 
       _messageList.add(ChatMessage(
-        content: response,
+        content: response.completion,
         role: MessageRole.assistant,
         createdAt: DateTime.now(),
         showCreateFileButton: showButton,
       ));
     } catch (e) {
       rethrow;
+    } finally {
+      _waitingResponse.value = false;
+    }
+  }
+
+  Future<void> sendMessageStream(
+    ChatMessage message, {
+    instant = false,
+    CancellationToken? cancellationToken,
+  }) async {
+    _messageList.add(message);
+
+    _waitingResponse.value = true;
+
+    final previousContext = await _previousMessageContext();
+
+    _messageList.add(
+      ChatMessage(
+        content: '',
+        role: MessageRole.assistant,
+        createdAt: DateTime.now(),
+      ),
+    );
+
+    void onUpdate(CompletionResponseDto response) {
+      final lastIndex = _messageList.length - 1;
+      final message = _messageList.last.copyWith(
+        content: response.completion,
+      );
+
+      _messageList.update(lastIndex, message);
+    }
+
+    try {
+      await _client.completeStream(
+        SamplingParametersDto(
+          prompt: previousContext,
+          model: instant
+              ? AnthropicModel.claudeInstantV1_1_100k
+              : AnthropicModel.claudeV1_3_100k,
+        ),
+        onUpdate: onUpdate,
+        cancellationToken: cancellationToken,
+      );
+    } catch (e) {
+      print(e);
     } finally {
       _waitingResponse.value = false;
     }

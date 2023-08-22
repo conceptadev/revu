@@ -8,7 +8,7 @@ class RepositoryAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize {
-    return const Size.fromHeight(120.0);
+    return const Size.fromHeight(150.0);
   }
 
   @override
