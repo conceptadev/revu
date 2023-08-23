@@ -560,6 +560,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  js_interop:
+    dependency: "direct main"
+    description:
+      name: js_interop
+      sha256: "7ec859c296958ccea34dc770504bd3ff4ae52fdd9e7eeb2bacc7081ad476a1f5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   json_annotation:
     dependency: "direct main"
     description:
@@ -648,6 +656,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  mix:
+    dependency: "direct main"
+    description:
+      name: mix
+      sha256: "9ab7291cfde2edb258fdc1a070cd44d2831dab114c5c69a1ae0eadefa1356176"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.7"
   nested:
     dependency: transitive
     description:

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js_interop';
+//import 'dart:js_interop';
 
 import 'package:flutter/foundation.dart';
 import 'package:revue_app/helpers/list.notifier.dart';
@@ -71,10 +71,6 @@ class ChatController {
          If necessary, seek additional information about the code's intended use cases or
          any specific aspects that need clarification. 
 
-         Let's define a key work that only user can use, this will be sent in the future prompts, where it will change how your response only for the next result, please to not take assumptions, and consider this key word has it should be
-            if no keyword was found, continue to reply normally:
-              - for '[WRITE_FILE]' the response should be only Code (This is important so i will write a file with this response).
-
         CONTEXT:
         $contents
         ''';
@@ -98,7 +94,7 @@ class ChatController {
     ]);
 
 
-    String lastPrompt = preDefinedPrompt.isNull
+    String lastPrompt = preDefinedPrompt == null
         ? 'Give a full overview of the code base. Including the stack being used.'
         : preDefinedPrompt.toString();
     // After initial context has been set to the list, send a msg to api

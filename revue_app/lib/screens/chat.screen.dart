@@ -38,10 +38,31 @@ class ChatScreen extends HookWidget {
     final waitingResponse = useListenable(_chatController.waitingResponse);
 
     List<PromptDto> promptList = [
-      PromptDto('Onboard Me on the Project', 'Please do a onboard on the project with a table about the files and a short description about what it does.'),
-      PromptDto('Do a Code Review', '''Please review the provided code snippet for adherence to code quality principles. Evaluate aspects such as DRYness, SOLID principles, simplicity (KISS), modularity, error handling, and appropriate use of comments/documentation. Additionally, assess the code's testing approach, version control practices, and consideration for performance optimization. Identify areas where improvements could be made to align with these code quality principles.'''),
+      PromptDto('Quick Onboard', ''''
+        Please do introduction to what project does and create table about with the file path and a detailed description about what it does.
+        I would like your response to be presented as a well structured markdown document and in a table format.
+        '''),
+      PromptDto('Code Review', '''
+        Please review the provided code snippet for adherence to code quality principles. 
+        Evaluate aspects such as DRY, SOLID principles, simplicity (KISS), modularity, error handling, and appropriate use of 
+        comments/documentation. Additionally, assess the code's testing approach, version control practices, and consideration for performance optimization. 
+        Identify areas where improvements could be made to align with these code quality principles.
+        I would like your response to be presented as a well structured markdown document.
+      '''),
       PromptDto('Architecture', 'Kindly conduct a review of the given code architecture. Evaluate the design for adherence to architectural best practices, such as separation of concerns, scalability, maintainability, and extensibility. Assess the usage of design patterns, the organization of modules/components, and the clarity of communication between different layers. Identify any potential architectural bottlenecks or areas that might benefit from refactoring to achieve a more robust and efficient architectural structure'),
-      PromptDto('Write documentation', ''' Please perform a thorough review of the provided codebase to identify functions that require additional comments. Focus on functions that involve complex logic, algorithms, or any non-obvious implementation. Evaluate the clarity and comprehensibility of the code, and suggest suitable places where comments can be added to explain the purpose, behavior, and any key considerations of those functions. Your input will help enhance the codebase's readability and aid future developers in understanding the code more effectively. '''),
+      PromptDto('Project Score', ''' 
+      I would like for you to review the code, and provide an overall project overview, that can be used as context for prompts for an AI React code reviewer. I would like your response to be presented as a well structured markdown document. With the following secctions:
+      - Project Overview
+      - Component Structure
+      - Performance Optimizations
+      - Code Quality
+      - Defects or Bugs
+      - Code Readability & Style
+      - Overview:
+      -- A score for each category from 0 - 10. Acting as a Senior React developer, rate yourself from 0-10 for each category as if you had written this code.
+
+      Important be very critical and provide a lot of details, the goal is to provide a lot of information that the Code Reviewer can make the best decision possible.
+      '''),
       // Add more prompt objects as needed.
     ];
 
@@ -86,7 +107,7 @@ class ChatScreen extends HookWidget {
             Padding(
               padding: EdgeInsets.only(right: 16.0),
               child: TypingIndicator(isTyping: true),
-            ),
+            ), 
           ],
         );
       }
@@ -135,9 +156,9 @@ class ChatScreen extends HookWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chat'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Chat'),
+      // ),
       body: Column(
         // mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -186,7 +207,7 @@ class ChatScreen extends HookWidget {
               maxLines: null,
               autofocus: true,
               decoration: InputDecoration(
-                hintText: 'Type a message 2',
+                hintText: 'Type a message',
                 filled: true,
                 fillColor: Theme.of(context)
                     .colorScheme

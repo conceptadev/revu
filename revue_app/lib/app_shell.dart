@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:revue_app/modules/github/github_providers.dart';
 import 'package:revue_app/screens/code_review.dart';
 import 'package:revue_app/screens/code_review_start.screen.dart';
-import 'package:revue_app/screens/code_review_web_screen.dart';
 
 GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -18,22 +17,23 @@ class AppShell extends HookConsumerWidget {
 
     final hasRepositoryOptions = repositorySlug != null;
 
+    // if (kIsWeb) {
+    //   return ScaffoldMessenger(
+    //     key: scaffoldMessengerKey,
+    //     child: const Scaffold(
+    //       body: CodeReviewWebScreen(),
+    //     ),
+    //   );
+    // }
+
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
-      child: const Scaffold(
-        body: CodeReviewWebScreen(),
+      child: Scaffold(
+        body: hasRepositoryOptions
+            ? const CodeReviewScreen()
+            : CodeReviewStartScreen(),
       ),
     );
-  
-
-    // return ScaffoldMessenger(
-    //   key: scaffoldMessengerKey,
-    //   child: Scaffold(
-    //     body: hasRepositoryOptions
-    //         ? const CodeReviewScreen()
-    //         : CodeReviewStartScreen(),
-    //   ),
-    // );
 
     // child: AdaptiveScaffold(
     //   smallBreakpoint: const WidthPlatformBreakpoint(end: 700),

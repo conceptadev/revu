@@ -12,9 +12,10 @@ enum AnthropicModel {
   const AnthropicModel(this.modelName);
 
   factory AnthropicModel.fromModelName(String? name) =>
-      AnthropicModel.values
-          .firstWhereOrNull((element) => element.modelName == name) ??
-      AnthropicModel.claudeV1_3_100k;
+      AnthropicModel.claudeInstantV1_1_100k;
+  //AnthropicModel.values
+  //  .firstWhereOrNull((element) => element.modelName == name) ??
+  //AnthropicModel.claudeV1_3_100k;
 
   @override
   String toString() => modelName;

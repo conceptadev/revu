@@ -40,6 +40,9 @@ dependencies:
   eventsource: ^0.4.0
   async: ^2.11.0
   http: ^0.13.6
+  mix: ^0.0.7
+  js_interop: ^0.0.1
+  
 
 dev_dependencies:
   flutter_test:
